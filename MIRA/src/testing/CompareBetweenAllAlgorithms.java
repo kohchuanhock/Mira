@@ -19,6 +19,11 @@ import sequential.BayesianB;
 import sequential.Mira;
 import sequential.YounesA;
 import sequential.YounesB;
+import afc.basic.datastructure.New;
+import afc.graphing.r.R;
+import afc.graphing.r.RGraph;
+import afc.graphing.r.RPlotGraph;
+import afc.utils.Binning;
 
 public class CompareBetweenAllAlgorithms {
 	
@@ -31,7 +36,7 @@ public class CompareBetweenAllAlgorithms {
 		 * Graph 3 - y = errors, x = theta
 		 * Graph 4 - y = undecided, x = theta
 		 */
-//		double binWidth = 0.05; TODO - need to put back
+		double binWidth = 0.05; 
 		final double trueThreshold = 0.25;
 		final double delta = 0.025;//Indifference Region
 		
@@ -48,9 +53,9 @@ public class CompareBetweenAllAlgorithms {
 		final double bayesBThreshold = 0.00001;//Threshold for Bayesian B
 		final boolean showBayesA = false;
 		final boolean showBayesB = false;
-//		final double yaxisLimit = 25000.0; TODO - Need to put back
+		final double yaxisLimit = 25000.0; 
 		
-		List<Double> thetaList = new ArrayList<Double>();
+		List<Double> thetaList = New.arrayList();
 		int nThreads = Runtime.getRuntime().availableProcessors();//Use all available processors 
 		ExecutorService threadExecutor = Executors.newFixedThreadPool(nThreads);
 		List<Future<Results>> resultList = new ArrayList<Future<Results>>();
@@ -64,34 +69,34 @@ public class CompareBetweenAllAlgorithms {
 		threadExecutor.shutdown();
 	
 		try{
-			List<Double> younesATotalSampleList = new ArrayList<Double>();
-			List<Double> younesATotalIncorrectList = new ArrayList<Double>();
+			List<Double> younesATotalSampleList = New.arrayList();
+			List<Double> younesATotalIncorrectList = New.arrayList();
 			
-			List<Double> bayesianATotalSampleList = new ArrayList<Double>();
-			List<Double> bayesianATotalIncorrectList = new ArrayList<Double>();
+			List<Double> bayesianATotalSampleList = New.arrayList();
+			List<Double> bayesianATotalIncorrectList = New.arrayList();
 			
-			List<Double> bayesianBTotalSampleList = new ArrayList<Double>();
-			List<Double> bayesianBTotalIncorrectList = new ArrayList<Double>();
+			List<Double> bayesianBTotalSampleList = New.arrayList();
+			List<Double> bayesianBTotalIncorrectList = New.arrayList();
 			
-			List<Double> younesBTotalSampleList = new ArrayList<Double>();
-			List<Double> younesBTotalIncorrectList = new ArrayList<Double>();
-			List<Double> younesBTotalUndecidedList = new ArrayList<Double>();
-			List<Double> younesBTotalIncorrectPlusUndecidedList = new ArrayList<Double>();
+			List<Double> younesBTotalSampleList = New.arrayList();
+			List<Double> younesBTotalIncorrectList = New.arrayList();
+			List<Double> younesBTotalUndecidedList = New.arrayList();
+			List<Double> younesBTotalIncorrectPlusUndecidedList = New.arrayList();
 			
-			List<Double> miraATotalSampleList = new ArrayList<Double>();
-			List<Double> miraATotalIncorrectList = new ArrayList<Double>();
-			List<Double> miraATotalIncorrectSampleSizeList = new ArrayList<Double>();
+			List<Double> miraATotalSampleList = New.arrayList();
+			List<Double> miraATotalIncorrectList = New.arrayList();
+			List<Double> miraATotalIncorrectSampleSizeList = New.arrayList();
 			
-			List<Double> miraBTotalSampleList = new ArrayList<Double>();
-			List<Double> miraBTotalIncorrectList = new ArrayList<Double>();
-			List<Double> miraBTotalIncorrectSampleSizeList = new ArrayList<Double>();
-			List<Double> miraBTotalIncorrectPlusByPValueList = new ArrayList<Double>();
-			List<Double> miraBTotalCorrectPValueList = new ArrayList<Double>();
-			List<Double> miraBTotalIncorrectPValueList = new ArrayList<Double>();
+			List<Double> miraBTotalSampleList = New.arrayList();
+			List<Double> miraBTotalIncorrectList = New.arrayList();
+			List<Double> miraBTotalIncorrectSampleSizeList = New.arrayList();
+			List<Double> miraBTotalIncorrectPlusByPValueList = New.arrayList();
+			List<Double> miraBTotalCorrectPValueList = New.arrayList();
+			List<Double> miraBTotalIncorrectPValueList = New.arrayList();
 			
 			//This defers from the above in that it keeps its original values
-			List<Double> miraBCorrectPValueList = new ArrayList<Double>();
-			List<Double> miraBIncorrectPValueList = new ArrayList<Double>();
+			List<Double> miraBCorrectPValueList = New.arrayList();
+			List<Double> miraBIncorrectPValueList = New.arrayList();
 			
 			for(Future<Results> r:resultList){
 				younesATotalSampleList.add((r.get().getTotalSamples(Results.Algorithm.YOUNESA) + 0.0) / repeats);
@@ -128,101 +133,88 @@ public class CompareBetweenAllAlgorithms {
 					bayesianBTotalIncorrectList.add((r.get().getTotalIncorrect(Results.Algorithm.BAYESB) + 0.0) / repeats);
 				}
 			}
-			// TODO - Need to put the following back
-//			String younesA = "Younes A";
-//			String younesB = "Younes B";
-//			String miraA = "OSM A";
-//			String miraB = "OSM B";
-//			String bayesA = "Bayesian A";
-//			String theta = "expression(theta)";
-//			String sampleSize = "Average Sample Size";
-//			String errors = "Error/Undecided Rate";
-//			String pValue = "Average P-Value";
-//			
-//			RGraph graph1_YounesA = RGraph.builder(younesATotalSampleList, thetaList).xLabel(theta).yLabel(sampleSize).legendTitle(younesA).build();
-//			Graph graph1_YounesB = new Graph(younesB, theta, sampleSize, thetaList, younesBTotalSampleList);
-//			Graph graph1_MiraA = new Graph(miraA, theta, sampleSize, thetaList, miraATotalSampleList);
-//			Graph graph1_MiraB = new Graph(miraB, theta, sampleSize, thetaList, miraBTotalSampleList);
-//			List<Graph> graph1 = new ArrayList<Graph>();
-//			graph1.add(graph1_YounesA);
-//			graph1.add(graph1_YounesB);
-//			graph1.add(graph1_MiraA);
-//			graph1.add(graph1_MiraB);
-//			if(showBayesA){
-//				Graph graph1_BayesA = new Graph(bayesA, theta, sampleSize, thetaList, bayesianATotalSampleList);
-//				graph1.add(graph1_BayesA);
-//			}
-//			
-//			Graph graph2_YounesA = new Graph(younesA, theta, errors, thetaList, younesATotalIncorrectList);
-//			Graph graph2_YounesB = new Graph(younesB, theta, errors, thetaList, younesBTotalIncorrectPlusUndecidedList);
-//			Graph graph2_MirachA = new Graph(miraA, theta, errors, thetaList, miraATotalIncorrectList);
-//			Graph graph2_MirachB = new Graph(miraB, theta, errors, thetaList, miraBTotalIncorrectPlusByPValueList);
-//			List<Graph> graph2 = new ArrayList<Graph>();
-//			graph2.add(graph2_YounesA);
-//			graph2.add(graph2_YounesB);
-//			graph2.add(graph2_MirachA);
-//			graph2.add(graph2_MirachB);
-//			if(showBayesA){
-//				Graph graph2_BayesA = new Graph(bayesA, theta, errors, thetaList, bayesianATotalIncorrectList);
-//				graph2.add(graph2_BayesA);
-//			}
-//			
-//			Graph graph3_MirachBCorrectPValue = new Graph(miraB+"_Correct", theta, pValue, thetaList, miraBTotalCorrectPValueList);
-//			Graph graph3_MirachBIncorrectPValue = new Graph(miraB+"_InCorrect", theta, pValue, thetaList, miraBTotalIncorrectPValueList);
-//			List<Graph> graph3 = new ArrayList<Graph>();
-//			graph3.add(graph3_MirachBCorrectPValue);
-//			graph3.add(graph3_MirachBIncorrectPValue);
-//			
-//			int numOfInterval = (int)((0.5 - binWidth) / binWidth) + 1;
-//			double min = 0.0;
-//			double[][] xyAxisCorrect = Binning.fixedWidthBinning(miraBCorrectPValueList, numOfInterval, binWidth, min);
-//			double[][] xyAxisIncorrect = Binning.fixedWidthBinning(miraBIncorrectPValueList, numOfInterval, binWidth, min);
-//			Graph graph4_Correct = new Graph(miraB+"_Correct", "pValue", "Frequency", xyAxisCorrect[0], xyAxisCorrect[1]);
-//			Graph graph4_Incorrect = new Graph(miraB+"_Incorrect", "pValue", "Frequency", xyAxisIncorrect[0], xyAxisIncorrect[1]);
-//			List<Graph> graph4 = new ArrayList<Graph>();
-//			graph4.add(graph4_Correct);
-//			graph4.add(graph4_Incorrect);
-//			
-//			double[][] combined = new double[xyAxisCorrect.length][xyAxisCorrect[0].length];
-//			for(int j = 0; j < combined[0].length; j++){
-//				combined[0][j] = xyAxisCorrect[0][j];
-//			}
-//			for(int j = 0; j < combined[0].length; j++){
-//				combined[1][j] = xyAxisCorrect[1][j] / (xyAxisCorrect[1][j] + xyAxisIncorrect[1][j]);
-//			}
-//			Graph graph5_g = new Graph(null, "pValue", "P(Correct)", combined[0], combined[1]);
-//			List<Graph> graph5 = new ArrayList<Graph>();
-//			graph5.add(graph5_g);
-//			
-//			
-//			final String outputLocation = "./graphs/";
-//			R r = new R();
-//			StringBuffer s = RPlotGraph.plotGraphs(graph1, outputLocation + "Graph1_" + trueThreshold + "_" + delta + ".pdf", "", null, 
-//					true, true, LEGENDLOCATION.TOPRIGHT, null, null, 0.0, yaxisLimit);
-//			s.append(RDraw.drawReferenceLine(false, trueThreshold + delta, "expression(p+delta)", false));
-//			s.append(RDraw.drawReferenceLine(false, trueThreshold - delta, "expression(p-delta)", false));
-//			s.append(RDraw.drawReferenceLine(true, maxSamples, ""));
-//			r.runCode(s, false);
-//			
-//			s = RPlotGraph.plotGraphs(graph2, outputLocation + "Graph2_" + trueThreshold + "_" + delta + ".pdf", "", null,
-//					true, true, LEGENDLOCATION.TOPRIGHT, null, null, 0.0, 1.0);
-//			s.append(RDraw.drawReferenceLine(false, trueThreshold + delta, "expression(p+delta)", false));
-//			s.append(RDraw.drawReferenceLine(false, trueThreshold - delta, "expression(p-delta)", false));
-//			s.append(RDraw.drawReferenceLine(true, alpha));
-//			r.runCode(s);
-//			
-//			s = RPlotGraph.plotGraphs(graph3, outputLocation + "Graph3_" + trueThreshold + "_" + delta + ".pdf", "Avg P-Value vs Theta", null);
-//			s.append(RDraw.drawReferenceLine(false, trueThreshold + delta, "p+d"));
-//			s.append(RDraw.drawReferenceLine(false, trueThreshold - delta, "p-d"));
-//			r.runCode(s);
-//			
-//			s = RPlotGraph.plotGraphs(graph4, outputLocation + "Graph4_" + trueThreshold + "_" + delta + ".pdf", "Frequency vs PValue", null);
-//			s.append(RDraw.drawReferenceLine(true, 0.0));
-//			r.runCode(s);
-//			
-//			s = RPlotGraph.plotGraph(graph5_g, outputLocation + "Graph5_" + trueThreshold + "_" + delta + ".pdf");
-//			s.append(RDraw.drawReferenceLine(true, 0.0));
-//			r.runCode(s);
+			String younesA = "Younes A";
+			String younesB = "Younes B";
+			String miraA = "OSM A";
+			String miraB = "OSM B";
+			String bayesA = "Bayesian A";
+			String theta = "expression(theta)";
+			String sampleSize = "Average Sample Size";
+			String errors = "Error/Undecided Rate";
+			String pValue = "Average P-Value";
+			
+			RGraph graph1_YounesA = RGraph.init(younesATotalSampleList, thetaList).xLabel(theta).yLabel(sampleSize).legendTitle(younesA).build();
+			RGraph graph1_YounesB = RGraph.init(younesBTotalSampleList, thetaList).xLabel(theta).yLabel(sampleSize).legendTitle(younesB).build();
+			RGraph graph1_MiraA = RGraph.init(miraATotalSampleList, thetaList).xLabel(theta).yLabel(sampleSize).legendTitle(miraA).build();
+			RGraph graph1_MiraB = RGraph.init(miraBTotalSampleList, thetaList).xLabel(theta).yLabel(sampleSize).legendTitle(miraB).build();
+			List<RGraph> graph1 = New.arrayList();
+			graph1.add(graph1_YounesA);
+			graph1.add(graph1_YounesB);
+			graph1.add(graph1_MiraA);
+			graph1.add(graph1_MiraB);
+			if(showBayesA){
+				RGraph graph1_BayesA = RGraph.init(bayesianATotalSampleList, thetaList).xLabel(theta).yLabel(sampleSize).legendTitle(bayesA).build();
+				graph1.add(graph1_BayesA);
+			}
+			
+			RGraph graph2_YounesA = RGraph.init(younesATotalIncorrectList, thetaList).xLabel(theta).yLabel(errors).legendTitle(younesA).build();
+			RGraph graph2_YounesB = RGraph.init(younesBTotalIncorrectPlusUndecidedList, thetaList).xLabel(theta).yLabel(errors).legendTitle(younesB).build();
+			RGraph graph2_MirachA = RGraph.init(miraATotalIncorrectList, thetaList).xLabel(theta).yLabel(errors).legendTitle(miraA).build();
+			RGraph graph2_MirachB = RGraph.init(miraBTotalIncorrectPlusByPValueList, thetaList).xLabel(theta).yLabel(errors).legendTitle(miraB).build();
+			List<RGraph> graph2 = new ArrayList<RGraph>();
+			graph2.add(graph2_YounesA);
+			graph2.add(graph2_YounesB);
+			graph2.add(graph2_MirachA);
+			graph2.add(graph2_MirachB);
+			if(showBayesA){
+				RGraph graph2_BayesA = RGraph.init(bayesianATotalIncorrectList, thetaList).xLabel(theta).yLabel(errors).legendTitle(bayesA).build();
+				graph2.add(graph2_BayesA);
+			}
+			
+			RGraph graph3_MirachBCorrectPValue = RGraph.init(miraBTotalCorrectPValueList, thetaList).legendTitle(miraB+"_Correct").xLabel(theta).yLabel(pValue).build();
+			RGraph graph3_MirachBIncorrectPValue = RGraph.init(miraBTotalIncorrectPValueList, thetaList).legendTitle(miraB+"_InCorrect").xLabel(theta).yLabel(pValue).build();
+			List<RGraph> graph3 = new ArrayList<RGraph>();
+			graph3.add(graph3_MirachBCorrectPValue);
+			graph3.add(graph3_MirachBIncorrectPValue);
+			
+			int numOfInterval = (int)((0.5 - binWidth) / binWidth) + 1;
+			double min = 0.0;
+			double[][] xyAxisCorrect = Binning.fixedWidthBinning(miraBCorrectPValueList, numOfInterval, binWidth, min);
+			double[][] xyAxisIncorrect = Binning.fixedWidthBinning(miraBIncorrectPValueList, numOfInterval, binWidth, min);
+			RGraph graph4_Correct = RGraph.init(xyAxisCorrect[1], xyAxisCorrect[0]).legendTitle(miraB+"_Correct").xLabel("pValue").yLabel("Frequency").build();
+			RGraph graph4_Incorrect = RGraph.init(xyAxisIncorrect[1], xyAxisIncorrect[0]).legendTitle(miraB+"_Incorrect").xLabel("pValue").yLabel("Frequency").build();
+			List<RGraph> graph4 = New.arrayList();
+			graph4.add(graph4_Correct);
+			graph4.add(graph4_Incorrect);
+			
+			double[][] combined = new double[xyAxisCorrect.length][xyAxisCorrect[0].length];
+			for(int j = 0; j < combined[0].length; j++){
+				combined[0][j] = xyAxisCorrect[0][j];
+			}
+			for(int j = 0; j < combined[0].length; j++){
+				combined[1][j] = xyAxisCorrect[1][j] / (xyAxisCorrect[1][j] + xyAxisIncorrect[1][j]);
+			}
+			RGraph graph5_g = RGraph.init(combined[1], combined[0]).xLabel("pValue").yLabel("P(Correct)").build();
+			List<RGraph> graph5 = new ArrayList<RGraph>();
+			graph5.add(graph5_g);
+			
+			
+			final String outputLocation = "./graphs/";
+			R r = new R();
+			StringBuffer s = RPlotGraph.init(graph1, outputLocation + "Graph1_" + trueThreshold + "_" + delta + ".pdf").yMin(0.0).yMax(yaxisLimit).build().draw();
+			r.runCode(s, false);
+			
+			s = RPlotGraph.init(graph2, outputLocation + "Graph2_" + trueThreshold + "_" + delta + ".pdf").yMin(0.0).yMax(1.0).build().draw();
+			r.runCode(s);
+			
+			s = RPlotGraph.init(graph3, outputLocation + "Graph3_" + trueThreshold + "_" + delta + ".pdf").graphTitle("Avg P-Value vs Theta").build().draw();
+			r.runCode(s);
+			
+			s = RPlotGraph.init(graph4, outputLocation + "Graph4_" + trueThreshold + "_" + delta + ".pdf").graphTitle("Frequency vs PValue").build().draw();
+			r.runCode(s);
+			
+			s = RPlotGraph.init(graph5_g, outputLocation + "Graph5_" + trueThreshold + "_" + delta + ".pdf").build().draw();
+			r.runCode(s);
 			
 			System.out.println("Finish");
 		}catch(Exception e){e.printStackTrace();}
