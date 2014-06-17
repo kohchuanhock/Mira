@@ -11,6 +11,9 @@ import sequential.Algorithm;
 import sequential.Algorithm.RuleStatus;
 import sequential.YounesA;
 import sequential.YounesB;
+import afc.graphing.r.R;
+import afc.graphing.r.RGraph;
+import afc.graphing.r.RPlotGraph;
 
 public class Incob2012 {
 	/*
@@ -96,34 +99,31 @@ public class Incob2012 {
 		/*
 		 * Graph Results
 		 */
-//		List<RGraph> graphList    = new ArrayList<RGraph>();
-//		List<RGraph> graphLogList = new ArrayList<RGraph>();
-//		for (int i = 0; i < delta.length; i++) {
-//			
-//			List<Double> yList    = new ArrayList<Double>();
-//			List<Double> yLogList = new ArrayList<Double>();
-//			
-//			for (int j = 0; j < thetaList.size(); j++) {
-//				yLogList.add( Math.log(samplesUsedAtDifferentTheta.get(j)[i]) / Math.log(2) );
-//				yList.add( (double) samplesUsedAtDifferentTheta.get(j)[i] );
-//			}
-//			
-//			RGraph graph = RGraph.builder(yList, thetaList).legendTitle(delta[i]+"").xLabel("expression(theta)").yLabel("Expected Sample Size").build();
-//			RGraph logGraph = RGraph.builder(yLogList, thetaList).legendTitle(delta[i]+"").xLabel("expression(theta)").yLabel("Log Expected Sample Size").build();
-//			graphList.add(graph);
-//			graphLogList.add(logGraph);
-//		}
+		List<RGraph> graphList    = new ArrayList<RGraph>();
+		List<RGraph> graphLogList = new ArrayList<RGraph>();
+		for (int i = 0; i < delta.length; i++) {
+			
+			List<Double> yList    = new ArrayList<Double>();
+			List<Double> yLogList = new ArrayList<Double>();
+			
+			for (int j = 0; j < thetaList.size(); j++) {
+				yLogList.add( Math.log(samplesUsedAtDifferentTheta.get(j)[i]) / Math.log(2) );
+				yList.add( (double) samplesUsedAtDifferentTheta.get(j)[i] );
+			}
+			
+			RGraph graph = RGraph.init(yList, thetaList).legendTitle(delta[i]+"").xLabel("expression(theta)").yLabel("Expected Sample Size").build();
+			RGraph logGraph = RGraph.init(yLogList, thetaList).legendTitle(delta[i]+"").xLabel("expression(theta)").yLabel("Log Expected Sample Size").build();
+			graphList.add(graph);
+			graphLogList.add(logGraph);
+		}
 		
-		// TODO - Need to put the following back
-//		final String fileOutputLocation = "./graphs/Incob2012/";
-//		StringBuffer s = RPlotGraph.plotGraphs(graphList, fileOutputLocation + filename + ".pdf", "", null, 
-//				true, true, LEGENDLOCATION.TOPRIGHT, null, null, null, null);
-//		R r = new R();
-//		r.runCode(s, false);
-//		
-//		s = RPlotGraph.plotGraphs(graphLogList, fileOutputLocation + filename + "Log.pdf", "", null, 
-//				true, true, LEGENDLOCATION.TOPRIGHT, null, null, null, null);
-//		r.runCode(s, false);
+		final String fileOutputLocation = "./graphs/Incob2012/";
+		StringBuffer s = RPlotGraph.init(graphList, fileOutputLocation + filename + ".pdf").build().draw();
+		R r = new R();
+		r.runCode(s, false);
+		
+		s = RPlotGraph.init(graphLogList, fileOutputLocation + filename + "Log.pdf").build().draw();
+		r.runCode(s, false);
 	}
 }
 
