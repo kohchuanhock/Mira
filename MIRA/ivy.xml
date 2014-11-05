@@ -1,0 +1,8 @@
+<ivy-module version="2.0">
+    <info organisation="mira.evankoh.com" module="mira"/>
+    <dependencies>
+    	<dependency org="org.apache.commons" name="commons-math" rev="2.2"/>
+    	<dependency org="nz.ac.waikato.cms.weka" name="weka-stable" rev="3.6.11"/>
+    </dependencies>
+</ivy-module>
+
